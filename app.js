@@ -15,8 +15,16 @@ const port = 3000;
  * 中间件是自定义的，用来扩展 express 功能，它可以在处理请求前，或者发送响应前做一些特定的操作，比如 log。
  */
 app.use(express.json());
+app.use(require('cors')())  // 需要安装 cors 依赖
 routes(app);
-
+//   //设置跨域访问
+//   app.all('*',function(req,res,next) {
+//     res.header("Access-Control-Allow-Origin","*");
+//     res.header('Access-Control-Allow-Methods','PUT,GET,POST,DELETE,OPTIONS');
+//     res.header("Access-Control-Allow-Headers","X-Requested-With");
+//     res.header('Access-Control-Allow-Headers','Content-Type');
+//     next();
+//   });
 // 1. 调用 app 中的 get 方法
 // 第一个参数是请求的路径，这里处理根路径的请求，
 // 第二个参数是处理请求的回调函数，参数分别为请求和响应对象
