@@ -20,6 +20,19 @@ route.get('/mode/list', function(req, res) {
     });
 })
 
+//增加数据
+route.post('/mode/unlock', function(req, res) {
+    var sql = 'insert into user_mode set  userId=? , modeId=?'; // 这边的"?"是SQL的模板语法
+    var params = [req.query.userId, req.query.modeId]  // 这边的数组参数与上边的"?"一一映射
+    con.query(sql, params, function(err, result) {
+        try {
+            res.send('增加数据成功');
+        } catch (err) {
+            console.log('新增数据失败');
+        }
+    });
+})
+
 //获取用户信息
 route.get('/info', function(req, res) {
     var sql = 'select * from user where id = ?';
@@ -65,8 +78,8 @@ route.post('/addPoint', function(req, res) {
 //增加数据
 route.post('/add', function(req, res) {
     const newTime = 'player'+String(Date.now());
-    var sql = 'insert into user set  name=?'; // 这边的"?"是SQL的模板语法
-    var params = [newTime]  // 这边的数组参数与上边的"?"一一映射
+    var sql = 'insert into user set  name=?,chapterId=?,checkpoint=?'; // 这边的"?"是SQL的模板语法
+    var params = [newTime,1,1]  // 这边的数组参数与上边的"?"一一映射
     con.query(sql, params, function(err, result) {
         try {
             // res.send('增加新用户成功');

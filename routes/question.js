@@ -12,7 +12,7 @@ route.get('/list', function (req, res) {
     const chapterId = req.query.chapterId;
     const params = chapterId?[chapterId, (parseInt(pageNum)) * parseInt(pageSize), parseInt(pageSize)]:[(parseInt(pageNum)) * parseInt(pageSize), parseInt(pageSize)]
 
-    var sql = chapterId?'select * from question where chapterId = ? limit ?,?':'select * from question limit ?,?';
+    var sql = chapterId?'select * from question where chapterId = ?order by rand() limit ?,? ':'select * from question order by rand() limit ?,? ';
     // var sql = 'select * from question';
     con.query(sql, params, function (err, result) {
         try {
@@ -23,6 +23,7 @@ route.get('/list', function (req, res) {
                     chapterId:item.chapterId,
                     options: JSON.parse(item.options),
                     type: item.type,
+                    id:item.id
                 }
             })
 
