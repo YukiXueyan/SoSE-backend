@@ -35,6 +35,36 @@ route.get('/list', function (req, res) {
     });
 })
 
+//获取题目列表(無盡模式)
+route.get('/list2', function (req, res) {
+    const pageNum = req.query.pageNum  //当前的num
+    const pageSize = req.query.pageSize  //当前页的数量
+    const isAll = req.query.isAll
+
+    const params = [(parseInt(pageNum)) * parseInt(pageSize), parseInt(pageSize)]
+
+    var sql = isAll?'select * from question order by rand()':'select * from question order by rand() limit ?,?';
+    // var sql = 'select * from question';
+    con.query(sql, params, function (err, result) {
+        try {
+            const res2 = result.map(item => {
+                return {
+                    question: item.question,
+                    currentAnswer: item.currentAnswer,
+                    chapterId:item.chapterId,
+                    options: JSON.parse(item.options),
+                    type: item.type,
+                    id:item.id
+                }
+            })
+
+            res.send(res2) //查询结果响应给请求方
+
+        } catch (err) {
+            console.log(err);
+        }
+    });
+})
 
 //添加题目
 route.post('/add', function (req, res) {
