@@ -76,9 +76,9 @@ route.post('/addPoint', function (req, res) {
 
 route.post('/add', function (req, res) {
   var newTime = 'player' + String(Date.now());
-  var sql = 'insert into user set  name=?,chapterId=?,checkpoint=?'; // 这边的"?"是SQL的模板语法
+  var sql = 'insert into user set  name=?,chapterId=?,checkpoint=?,point=?'; // 这边的"?"是SQL的模板语法
 
-  var params = [newTime, 1, 1]; // 这边的数组参数与上边的"?"一一映射
+  var params = [newTime, 1, 1, 0]; // 这边的数组参数与上边的"?"一一映射
 
   con.query(sql, params, function (err, result) {
     try {
@@ -112,6 +112,22 @@ route.get('/allUsers', function (req, res) {
 route.put('/changeInfo', function (req, res) {
   var sql = "\n    update user set name=? where id=?\n    ";
   var params = [req.query.name, req.query.userId];
+  con.query(sql, params, function (err, result) {
+    try {
+      res.send('success'); //查询结果响应给请求方
+    } catch (err) {
+      console.log("err", err);
+    }
+  });
+});
+route.put('/updateAdmin', function (req, res) {
+  var name = req.query.name || '';
+  var point = req.query.point || '';
+  var chapterId = req.query.chapterId || null;
+  var checkpoint = req.query.checkpoint || null;
+  var id = req.query.id;
+  var sql = 'update user set `name`=?, `point`=?, `chapterId`=?,`checkpoint`=? where id=?';
+  var params = [name, point, chapterId, checkpoint, id];
   con.query(sql, params, function (err, result) {
     try {
       res.send('success'); //查询结果响应给请求方

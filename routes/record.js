@@ -14,7 +14,6 @@ route.get('/', function(req, res) {
 
     var sql = modeId?'select * from record where userId = ?and modeId=?':'select * from record where userId = ?';
     // var sql = 'select * from record where userId = ? limit ?,?';
-    console.log({sql, params})
     con.query(sql, params, function(err, result) { 
         try {
             res.send(result) //查询结果响应给请求方

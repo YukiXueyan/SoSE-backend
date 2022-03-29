@@ -69,7 +69,6 @@ route.post('/addPoint', function(req, res) {
     con.query(sql, params, function(err, result) { 
         try {
             res.send(result) //查询结果响应给请求方
-
         } catch (err) {
             console.log("err",err);
         }
@@ -78,8 +77,8 @@ route.post('/addPoint', function(req, res) {
 //增加数据
 route.post('/add', function(req, res) {
     const newTime = 'player'+String(Date.now());
-    var sql = 'insert into user set  name=?,chapterId=?,checkpoint=?'; // 这边的"?"是SQL的模板语法
-    var params = [newTime,1,1]  // 这边的数组参数与上边的"?"一一映射
+    var sql = 'insert into user set  name=?,chapterId=?,checkpoint=?,point=?'; // 这边的"?"是SQL的模板语法
+    var params = [newTime,1,1,0]  // 这边的数组参数与上边的"?"一一映射
     con.query(sql, params, function(err, result) {
         try {
             // res.send('增加新用户成功');
@@ -126,7 +125,26 @@ route.put('/changeInfo', function(req, res) {
         }
     });
 })
+route.put('/updateAdmin', function(req, res) {
+    const name=req.query.name || '';
+    const point=req.query.point || '';
+    const chapterId=req.query.chapterId || null;
+    const checkpoint=req.query.checkpoint || null;
+    const id=req.query.id;
+ 
 
+    var sql = 'update user set `name`=?, `point`=?, `chapterId`=?,`checkpoint`=? where id=?';
+    var params = [name, point,chapterId,checkpoint, id]  
+
+    con.query(sql, params, function(err, result) { 
+        try {
+            res.send('success') //查询结果响应给请求方
+
+        } catch (err) {
+            console.log("err",err);
+        }
+    });
+})
 //删除数据
 route.delete('/delete', function(req, res) {
     var sql = 'delete from user where id= ?'
