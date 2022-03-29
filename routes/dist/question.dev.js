@@ -5,9 +5,8 @@ var express = require("express"); // 引入express模块
 
 var route = express(); // const mysql = require('mysql'); // 引入mysql模块
 
-var con = require("./database");
+var con = require("./database"); // const data = require("./data");
 
-var data = require("./data");
 
 var moment = require("moment"); //获取题目列表
 
@@ -46,8 +45,9 @@ route.get('/list2', function (req, res) {
   var pageSize = req.query.pageSize; //当前页的数量
 
   var isAll = req.query.isAll;
+  var rand = req.query.rand ? '' : 'order by rand()';
   var params = [parseInt(pageNum) * parseInt(pageSize), parseInt(pageSize)];
-  var sql = isAll ? 'select * from question order by rand()' : 'select * from question order by rand() limit ?,?'; // var sql = 'select * from question';
+  var sql = isAll ? "select * from question ".concat(rand) : "select * from question ".concat(rand, " limit ?,?"); // var sql = 'select * from question';
 
   con.query(sql, params, function (err, result) {
     try {
@@ -69,32 +69,72 @@ route.get('/list2', function (req, res) {
 }); //添加题目
 
 route.post('/add', function (req, res) {
-  data.map(function (item) {
-    var optList = JSON.stringify(item.options);
-    var params = [item.question, item.currentAnswer, item.chapterId, item.type]; // 判断
-    // var params = [item.question, item.currentAnswer, item.chapterId,item.type,optList]  //单选题
+  // data.map(item => {
+  //     var optList = JSON.stringify(item.options)
+  //     var params = [item.question, item.currentAnswer, item.chapterId,item.type]  // 判断
+  //     // var params = [item.question, item.currentAnswer, item.chapterId,item.type,optList]  //单选题
+  //     var sql = 'insert into question set  question=? , currentAnswer=?, chapterId=?, type=?';// 判断
+  //     // var sql = 'insert into question set  question=? , currentAnswer=?, chapterId=?, type=?,options=?';//单选题
+  //     con.query(sql, params, function (err, result) {
+  //         try {
+  //             res.send(result) //查询结果响应给请求方
+  //         } catch (err) {
+  //             console.log("查询失败");
+  //         }
+  //     });
+  // })
+  var optList = JSON.stringify(req.query.options); // var params = [item.question, item.currentAnswer, item.chapterId,item.type]  // 判断
 
-    var sql = 'insert into question set  question=? , currentAnswer=?, chapterId=?, type=?'; // 判断
-    // var sql = 'insert into question set  question=? , currentAnswer=?, chapterId=?, type=?,options=?';//单选题
+  var params = [req.query.question, req.query.currentAnswer, req.query.chapterId, req.query.type, optList]; //单选题
+  // var sql = 'insert into question set  question=? , currentAnswer=?, chapterId=?, type=?';// 判断
 
-    con.query(sql, params, function (err, result) {
-      try {
-        res.send(result); //查询结果响应给请求方
-      } catch (err) {
-        console.log("查询失败");
-      }
-    });
-  }); // res.send('add function ') //查询结果响应给请求方
-});
-route.post('/add2', function (req, res) {
-  var jsonData = JSON.stringify(data[1].options);
-  var params = [jsonData];
-  var sql = 'update question set options=? where id = 2';
+  var sql = 'insert into question set  question=? , currentAnswer=?, chapterId=?, type=?,options=?'; //单选题
+
   con.query(sql, params, function (err, result) {
     try {
-      res.send('result'); //查询结果响应给请求方
+      res.send(result); //查询结果响应给请求方
     } catch (err) {
-      console.log("查询失败");
+      console.log("添加失败");
+      res.send('添加失败');
+    }
+  }); // res.send('add function ') //查询结果响应给请求方
+}); // route.post('/add2', function (req, res) {
+//     const jsonData = JSON.stringify(data[1].options);
+//     const params = [jsonData]
+//     var sql = 'update question set options=? where id = 2';
+//     con.query(sql, params, function (err, result) {
+//         try {
+//             res.send('result') //查询结果响应给请求方
+//         } catch (err) {
+//             console.log("查询失败");
+//         }
+//     });
+// })
+//修改
+
+route.put('/update', function (req, res) {
+  var sql = 'update question set question=? , currentAnswer=?, chapterId=?, type=?,options=? where id=?';
+  var optList = JSON.stringify(req.query.options); // var params = [item.question, item.currentAnswer, item.chapterId,item.type]  // 判断
+
+  var params = [req.query.question, req.query.currentAnswer, req.query.chapterId, req.query.type, optList, req.query.id]; //单选题
+
+  con.query(sql, params, function (err) {
+    try {
+      res.send('修改数据成功');
+    } catch (err) {
+      console.log('修改数据失败');
+    }
+  });
+}); //删除
+
+route["delete"]('/delete', function (req, res) {
+  var sql = 'delete from question where id= ?';
+  var params = [req.query.id];
+  con.query(sql, params, function (err) {
+    try {
+      res.send('删除数据成功');
+    } catch (err) {
+      console.log('删除数据失败');
     }
   });
 }); //完成答题

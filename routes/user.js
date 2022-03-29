@@ -130,7 +130,7 @@ route.put('/changeInfo', function(req, res) {
 //删除数据
 route.delete('/delete', function(req, res) {
     var sql = 'delete from user where id= ?'
-    var params = [req.query.id];
+    var params = [req.query.userId];
     con.query(sql, params, function(err) {
         try {
             res.send('删除数据成功');

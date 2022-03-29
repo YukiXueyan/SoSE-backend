@@ -24,6 +24,19 @@ route.get('/list', function(req, res) {
       }
   });
 })
+route.get('/listAll', function(req, res) {
+    var sql = `select * from achieve`;
+    var params = []
+    con.query(sql, params, function(err, result) { 
+        try {
+            res.send(result) //查询结果响应给请求方
+  
+        } catch (err) {
+            console.log("查询失败");
+        }
+    });
+  })
+  
 
 /**
  * 添加用户成就
@@ -41,5 +54,31 @@ route.post('/add', function(req, res) {
       }
   });
 })
+
+//修改数据
+route.put('/update', function(req, res) {
+    var sql = 'update user set name=?, state=? where id=?';
+    var params = [req.query.name, req.query.state, req.query.id]
+    con.query(sql, params, function(err) {
+        try {
+            res.send('修改数据成功');
+        } catch (err) {
+            console.log('修改数据失败');
+        }
+    });
+})
+//删除数据
+route.delete('/delete', function(req, res) {
+    var sql = 'delete from user where id= ?'
+    var params = [req.query.id];
+    con.query(sql, params, function(err) {
+        try {
+            res.send('删除数据成功');
+        } catch (err) {
+            console.log('删除数据失败');
+        }
+    });
+})
+
 
 module.exports = route;
